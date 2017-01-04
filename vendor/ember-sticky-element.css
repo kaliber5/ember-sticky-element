@@ -1,0 +1,4 @@
+.sticky-element__trigger--bottom {
+    position: absolute;
+    bottom: 0;
+}
