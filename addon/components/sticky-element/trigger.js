@@ -69,15 +69,15 @@ export default Ember.Component.extend(InViewportMixin, {
     viewportTolerance[this.get('type')] = -this.get('offset');
     Ember.setProperties(this, {
       viewportSpy: true,
-      // viewportScrollSensitivity : 1,
-      // viewportRefreshRate       : 150,
+      viewportEnabled: true,
+      viewportRefreshRate: 1,
       viewportTolerance
     });
   },
 
   didInsertElement() {
-    this._super(...arguments);
     this.updateViewportOptions();
+    this._super(...arguments);
   },
 
   _onOffsetChange: observer('offset', function() {

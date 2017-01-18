@@ -1,0 +1,86 @@
+<h1>ember-sticky-element</h1>
+
+
+<div class="row">
+  <div class="col small">
+    {{#sticky-element class="sticky" as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>small, not sticky to bottom</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+  <div class="col small bottom">
+    {{#sticky-element class="sticky" bottom=0 as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>small, sticky to bottom</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+  <div class="col large">
+    {{#sticky-element class="sticky" as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>large, not sticky to bottom</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+  <div class="col large bottom">
+    {{#sticky-element class="sticky" bottom=0 as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>large, sticky to bottom</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+  <div class="col small off">
+    {{#sticky-element class="sticky" as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>small, not sticky to bottom, off view</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+  <div class="col small bottom off">
+    {{#sticky-element class="sticky" bottom=0 as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>small, sticky to bottom, off view</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+  <div class="col large off">
+    {{#sticky-element class="sticky" as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>large, not sticky to bottom, off view</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+  <div class="col large bottom off">
+    {{#sticky-element class="sticky" bottom=0 as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>large, sticky to bottom, off view</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+</div>
+

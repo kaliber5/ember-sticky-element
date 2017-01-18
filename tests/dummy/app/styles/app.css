@@ -1,0 +1,63 @@
+body {
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+.row {
+    display: flex;
+    justify-content: space-around;
+}
+
+.col {
+    /*border: solid 3px red;*/
+    /*padding: 5px;*/
+    position: relative;
+    height: 150vh;
+    /*width: 10%;*/
+    margin-bottom: 120vh;
+    background-color: #ccc;
+    width: 100%;
+}
+
+.col.off {
+    margin-top: 120vh;
+    margin-bottom: 0;
+}
+
+.sticky-element {
+    background-color: greenyellow;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.large .sticky-element {
+    background-color: lightskyblue;
+    height: 120vh;
+}
+
+.debug {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+}
+
+/*
+This is needed for testing!
+*/
+#ember-testing-container {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    height: auto !important;
+}
+
+#ember-testing {
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
+}
