@@ -1,6 +1,6 @@
 {
   "name": "ember-sticky-element",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An ember component that mimics the functionality of `position: sticky`",
   "keywords": [
     "ember-addon",
