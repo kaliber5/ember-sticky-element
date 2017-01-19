@@ -1,6 +1,5 @@
 {{sticky-element/trigger offset=top enter=(action "parentTopEntered") exit=(action "parentTopExited")}}
 <div class="sticky-element {{if isSticky "sticky-element--sticky"}}{{if isStickyTop " sticky-element--sticky-top"}}{{if isStickyBottom " sticky-element--sticky-bottom"}}" style={{containerStyle}}>
-  {{sticky-element/trigger offset=top enter=(action "topEntered") exit=(action "topExited")}}
   {{yield
     (hash
       isSticky=isSticky

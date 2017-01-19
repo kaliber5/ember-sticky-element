@@ -7,12 +7,14 @@ moduleForComponent('sticky-element', 'Integration | Component | sticky element',
 });
 
 const {
-  $
+  $,
+  RSVP
 } = Ember;
 
-function scrollTo(pos) {
+function scrollTo(pos, animate = false) {
   let top;
   let windowHeight = $('#ember-testing-container').height();
+  let innerHeight = $('#ember-testing-container').get(0).scrollHeight;
 
   switch (pos) {
     case 'top':
@@ -31,13 +33,24 @@ function scrollTo(pos) {
       top = $('#ember-testing-container .col').get(0).offsetTop + 10;
       break;
     case 'bottom':
-      top = 10000;
+      top = innerHeight - windowHeight;
       break;
     default:
       throw new Error(`Unsupported scroll position: ${pos}`);
   }
 
-  $('#ember-testing-container').scrollTop(top).scroll();
+  return new RSVP.Promise((resolve) => {
+    if (animate) {
+      $('#ember-testing-container')
+        .stop()
+        .animate({ scrollTop: top }, 1000, () => {
+          resolve();
+        });
+    } else {
+      $('#ember-testing-container').scrollTop(top);
+      resolve();
+    }
+  });
 }
 
 const testCases = [
@@ -156,7 +169,6 @@ const testCases = [
     stickToBottom: true,
     sticky: 'bottom'
   },
-
 
   {
     size: 'small',
@@ -277,22 +289,63 @@ const testCases = [
 ];
 
 testCases.forEach((testCase) => {
-  test(`Size: ${testCase.size}, offView: ${testCase.offView}, stick to bottom: ${testCase.stickToBottom === false ? 'false' : 'true'}, scroll position: ${testCase.scrollPosition}`, function(assert) {
-    this.setProperties(testCase);
-    this.set('bottom', testCase.stickToBottom ? 0 : false);
-    this.render(hbs`
-    <div class="row">
-      <div class="col {{size}} {{if offView "off"}}">
-        {{#sticky-element class="sticky" bottom=bottom as |sticky|}}
-          <p id="debug">
-            {{sticky-debug sticky}}
-          </p>
-        {{/sticky-element}}
-      </div>
-    </div>
-  `);
+  [true, false].forEach((scrollAnimate) => {
+    test(`Scrolling | Size: ${testCase.size}, offView: ${testCase.offView}, stick to bottom: ${testCase.stickToBottom === false ? 'false' : 'true'}, scroll position: ${testCase.scrollPosition}, slow scroll: ${scrollAnimate}`, function(assert) {
+      this.setProperties(testCase);
+      this.set('bottom', testCase.stickToBottom ? 0 : null);
+      this.render(hbs`
+        <div class="row">
+          <div class="col {{size}} {{if offView "off"}}">
+            {{#sticky-element class="sticky" bottom=bottom as |sticky|}}
+              <p id="debug">
+                {{sticky-debug sticky}}
+              </p>
+            {{/sticky-element}}
+          </div>
+        </div>
+      `);
 
-    scrollTo(testCase.scrollPosition);
+      let debug;
+      switch (testCase.sticky) {
+        case 'top':
+          debug = 'Stick to top';
+          break;
+        case 'bottom':
+          debug = 'Stick to bottom';
+          break;
+        default:
+          debug = 'Not sticky';
+      }
+
+      return scrollTo(testCase.scrollPosition, scrollAnimate)
+        .then(() => {
+          return new RSVP.Promise((resolve) => {
+            setTimeout(() => {
+              assert.equal(this.$('#debug').text().trim(), debug, debug);
+              resolve();
+            }, 20);
+          });
+        });
+    });
+  });
+
+  test(`Late insert | Size: ${testCase.size}, offView: ${testCase.offView}, stick to bottom: ${testCase.stickToBottom === false ? 'false' : 'true'}, scroll position: ${testCase.scrollPosition}`, function(assert) {
+    this.setProperties(testCase);
+    this.set('bottom', testCase.stickToBottom ? 0 : null);
+    this.set('visible', false);
+    this.render(hbs`
+        <div class="row">
+          <div class="col {{size}} {{if offView "off"}}">
+            {{#if visible}}
+              {{#sticky-element class="sticky" bottom=bottom as |sticky|}}
+                <p id="debug">
+                  {{sticky-debug sticky}}
+                </p>
+              {{/sticky-element}}
+            {{/if}}
+          </div>
+        </div>
+      `);
 
     let debug;
     switch (testCase.sticky) {
@@ -306,12 +359,18 @@ testCases.forEach((testCase) => {
         debug = 'Not sticky';
     }
 
-    let done = assert.async();
-    setTimeout(() => {
-      assert.equal(this.$('#debug').text().trim(), debug, debug);
-      done();
-    }, 110);
+    return scrollTo(testCase.scrollPosition)
+      .then(() => {
+        this.set('visible', true);
+        return new RSVP.Promise((resolve) => {
+          setTimeout(() => {
+            assert.equal(this.$('#debug').text().trim(), debug, debug);
+            resolve();
+          }, 50);
+        });
+      });
   });
+
 });
 
 

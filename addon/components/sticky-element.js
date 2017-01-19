@@ -41,8 +41,8 @@ export default Ember.Component.extend({
    * @readOnly
    * @private
    */
-  isStickyTop: computed('parentTopInViewport', 'parentBottomInViewport', function() {
-    return !this.get('parentTopInViewport') && !this.get('parentBottomInViewport');
+  isStickyTop: computed('parentTop', 'parentBottom', 'isStickyBottom', function() {
+    return this.get('parentTop') === 'top' && !this.get('isStickyBottom');
   }).readOnly(),
 
   /**
@@ -51,30 +51,23 @@ export default Ember.Component.extend({
    * @readOnly
    * @private
    */
-  isStickyBottom: computed('parentBottomInViewport', 'topInViewport', 'parentTopInViewport', function() {
-    return this.get('parentBottomInViewport') || (!this.get('parentBottomInViewport') && !this.get('topInViewport') && !this.get('parentTopInViewport'));
+  isStickyBottom: computed('parentBottom', 'stickToBottom', function() {
+    return this.get('parentBottom') !== 'bottom' && this.get('stickToBottom');
   }).readOnly(),
 
   /**
-   * @property topInViewport
-   * @type {boolean}
+   * @property parentTop
+   * @type {string}
    * @private
    */
-  topInViewport: false,
+  parentTop: 'bottom',
 
   /**
-   * @property parentTopInViewport
-   * @type {boolean}
+   * @property parentBottom
+   * @type {string}
    * @private
    */
-  parentTopInViewport: false,
-
-  /**
-   * @property parentBottomInViewport
-   * @type {boolean}
-   * @private
-   */
-  parentBottomInViewport: false,
+  parentBottom: 'bottom',
 
   /**
    * @property ownHeight
@@ -107,7 +100,7 @@ export default Ember.Component.extend({
 
   /**
    * @property offsetBottom
-   * @type {number }
+   * @type {number}
    * @private
    */
   offsetBottom: computed('top', 'ownHeight', 'bottom', 'windowHeight', function() {
@@ -164,24 +157,23 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    topEntered() {
-      this.set('topInViewport', true);
-    },
-    topExited() {
-      this.set('topInViewport', false);
-    },
     parentTopEntered() {
-      this.set('parentTopInViewport', true);
+      // console.log('parentTopEntered');
+      this.set('parentTop', 'in');
     },
-    parentTopExited() {
+    parentTopExited(top) {
+      // make sure we captured the right dimensions before getting sticky!
       this.updateDimension();
-      this.set('parentTopInViewport', false);
+      // console.log('parentTopExited', top);
+      this.set('parentTop', top ? 'top' : 'bottom');
     },
     parentBottomEntered() {
-      this.set('parentBottomInViewport', true);
+      // console.log('parentBottomEntered');
+      this.set('parentBottom', 'in');
     },
-    parentBottomExited() {
-      this.set('parentBottomInViewport', false);
+    parentBottomExited(top) {
+      // console.log('parentBottomExited', top);
+      this.set('parentBottom', top ? 'top' : 'bottom');
     }
   }
 });

@@ -31,6 +31,8 @@ export default Ember.Component.extend(InViewportMixin, {
     return `sticky-element__trigger--${this.get('type')}`;
   }),
 
+  _lastTop: null,
+
   /**
    * Action when trigger enters viewport
    *
@@ -43,16 +45,21 @@ export default Ember.Component.extend(InViewportMixin, {
    * Action when trigger exits viewport
    *
    * @event exit
+   * @param {Boolean} top True if element left the viewport from the top
    * @public
    */
   exit: null,
+
+  isBeforeViewport() {
+    return this.get('element').getBoundingClientRect().top < 0;
+  },
 
   didEnterViewport() {
     this.sendAction('enter');
   },
 
   didExitViewport() {
-    this.sendAction('exit');
+    this.sendAction('exit', this.isBeforeViewport());
   },
 
   /**
@@ -70,7 +77,6 @@ export default Ember.Component.extend(InViewportMixin, {
     Ember.setProperties(this, {
       viewportSpy: true,
       viewportEnabled: true,
-      viewportRefreshRate: 1,
       viewportTolerance
     });
   },
@@ -82,5 +88,35 @@ export default Ember.Component.extend(InViewportMixin, {
 
   _onOffsetChange: observer('offset', function() {
     this.updateViewportOptions();
-  })
+  }),
+
+  _bindScrollDirectionListener() {},
+  _unbindScrollDirectionListener() {},
+
+  /**
+   * Override ember-in-viewport method to trigger event also when trigger has moved from below viewport to on top
+   * of viewport without triggering didEnterViewport because of too fast scroll movement
+   *
+   * @method _triggerDidAccessViewport
+   * @param hasEnteredViewport
+   * @private
+   */
+  _triggerDidAccessViewport(hasEnteredViewport = false) {
+    let viewportEntered = this.get('viewportEntered');
+    let didEnter = !viewportEntered && hasEnteredViewport;
+    let didLeave = viewportEntered && !hasEnteredViewport;
+
+    let lastTop = this._lastTop;
+    this._lastTop = this.isBeforeViewport();
+
+    if (!didEnter && !didLeave) {
+      if (lastTop !== this._lastTop) {
+        this._super(true);
+        this._super(false);
+      }
+    } else {
+      this._super(hasEnteredViewport);
+    }
+  }
+
 });

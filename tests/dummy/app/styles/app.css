@@ -11,6 +11,7 @@ h1 {
 .row {
     display: flex;
     justify-content: space-around;
+    overflow: hidden;
 }
 
 .col {
@@ -35,8 +36,13 @@ h1 {
     box-sizing: border-box;
 }
 
-.large .sticky-element {
+.small .sticky-element {
     background-color: lightskyblue;
+    height: 50vh;
+}
+
+.large .sticky-element {
+    background-color: deepskyblue;
     height: 120vh;
 }
 
