@@ -22,6 +22,16 @@
     {{/sticky-element}}
   </div>
 
+  <div class="col small bottom">
+    {{#sticky-element top=50 class="sticky" bottom=0 as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>small, sticky to bottom, with offset</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
   <div class="col large">
     {{#sticky-element class="sticky" as |sticky|}}
       <h2>Sticky Element</h2>
@@ -56,6 +66,16 @@
     {{#sticky-element class="sticky" bottom=0 as |sticky|}}
       <h2>Sticky Element</h2>
       <p>small, sticky to bottom, off view</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+  <div class="col small bottom off">
+    {{#sticky-element top=50 class="sticky" bottom=0 as |sticky|}}
+      <h2>Sticky Element</h2>
+      <p>small, sticky to bottom, with offset, off view</p>
       <p class="debug">
         {{sticky-debug sticky}}
       </p>

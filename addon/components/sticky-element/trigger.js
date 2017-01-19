@@ -51,7 +51,8 @@ export default Ember.Component.extend(InViewportMixin, {
   exit: null,
 
   isBeforeViewport() {
-    return this.get('element').getBoundingClientRect().top < 0;
+    let offset = this.get('type') === 'top' ? this.get('offset') : 0;
+    return this.get('element').getBoundingClientRect().top - offset < 0;
   },
 
   didEnterViewport() {
