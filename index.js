@@ -13,9 +13,5 @@ module.exports = {
     }
 
     target.import('vendor/ember-sticky-element.css');
-  },
-
-  isDevelopingAddon: function() {
-    return true;
   }
 };

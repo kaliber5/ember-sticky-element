@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/simonihmig/ember-sticky-element"
+    "url": "https://github.com/kaliber5/ember-sticky-element"
   },
   "scripts": {
     "build": "ember build",
