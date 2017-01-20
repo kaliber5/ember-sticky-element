@@ -9,17 +9,12 @@ h1 {
 }
 
 .row {
-    display: flex;
-    justify-content: space-around;
     overflow: hidden;
 }
 
 .col {
-    /*border: solid 3px red;*/
-    /*padding: 5px;*/
     position: relative;
     height: 150vh;
-    /*width: 10%;*/
     margin-bottom: 120vh;
     background-color: #ccc;
     width: 100%;
@@ -50,6 +45,19 @@ h1 {
     background-color: red;
     color: white;
     padding: 5px 10px;
+}
+
+.demo {
+    display: flex;
+    justify-content: space-around;
+}
+
+.demo .col {
+    border: solid 2px red;
+    padding: 2px;
+    width: 10%;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 /*
