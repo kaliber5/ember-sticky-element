@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
-export function stickyDebug(params/*, hash*/) {
-  let stickyness = params[0];
+export function stickyDebug(params) {
+  let [stickyness] = params;
 
   switch (true) {
     case stickyness.isStickyTop:
