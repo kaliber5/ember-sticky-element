@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/kaliber5/ember-sticky-element.svg?branch=master)](https://travis-ci.org/kaliber5/ember-sticky-element)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-sticky-element.svg)](https://emberobserver.com/addons/ember-sticky-element)
 [![npm version](https://badge.fury.io/js/ember-sticky-element.svg)](https://badge.fury.io/js/ember-sticky-element)
-
+[![Greenkeeper badge](https://badges.greenkeeper.io/kaliber5/ember-sticky-element.svg)](https://greenkeeper.io/)
 
 This Ember addon gives you the ability to make parts of your UI stick to the viewport when scrolling. 
 Its semantics follow roughly the proposed [`position: sticky`](https://drafts.csswg.org/css-position/#sticky-pos) specs.
