@@ -1,9 +1,12 @@
-import Ember from 'ember';
+import { or, notEmpty } from '@ember/object/computed';
+import $ from 'jquery';
+import { htmlSafe } from '@ember/string';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { scheduleOnce } from '@ember/runloop';
 import layout from '../templates/components/sticky-element';
 
-const { computed, run: { scheduleOnce } } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
   attributeBindings: ['style'],
 
@@ -33,7 +36,7 @@ export default Ember.Component.extend({
    * @readOnly
    * @private
    */
-  isSticky: computed.or('isStickyTop', 'isStickyBottom').readOnly(),
+  isSticky: or('isStickyTop', 'isStickyBottom').readOnly(),
 
   /**
    * @property isStickyTop
@@ -89,7 +92,7 @@ export default Ember.Component.extend({
    * @readOnly
    * @private
    */
-  stickToBottom: computed.notEmpty('bottom').readOnly(),
+  stickToBottom: notEmpty('bottom').readOnly(),
 
   /**
    * @property windowHeight
@@ -119,7 +122,7 @@ export default Ember.Component.extend({
     let height = this.get('ownHeight');
     let width = this.get('ownWidth');
     if (height > 0 && this.get('isSticky')) {
-      return Ember.String.htmlSafe(`height: ${height}px; width: ${width}px`);
+      return htmlSafe(`height: ${height}px; width: ${width}px`);
     }
   }),
 
@@ -133,11 +136,11 @@ export default Ember.Component.extend({
   containerStyle: computed('isStickyTop', 'isStickyBottom', 'top', 'bottom', function() {
     if (this.get('isStickyBottom')) {
       let style = `position: absolute; bottom: ${this.get('bottom')}px; width: ${this.get('ownWidth')}px`;
-      return Ember.String.htmlSafe(style);
+      return htmlSafe(style);
     }
     if (this.get('isStickyTop')) {
       let style = `position: fixed; top: ${this.get('top')}px; width: ${this.get('ownWidth')}px`;
-      return Ember.String.htmlSafe(style);
+      return htmlSafe(style);
     }
   }),
 
@@ -146,7 +149,7 @@ export default Ember.Component.extend({
    * @private
    */
   updateDimension() {
-    this.set('windowHeight', Ember.$(window).height());
+    this.set('windowHeight', $(window).height());
     this.set('ownHeight', this.$().height());
     this.set('ownWidth', this.$().width());
   },

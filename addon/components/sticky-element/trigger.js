@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { observer, computed, setProperties } from '@ember/object';
 import InViewportMixin from 'ember-in-viewport';
 
-const { computed, observer } = Ember;
-
-export default Ember.Component.extend(InViewportMixin, {
+export default Component.extend(InViewportMixin, {
   classNameBindings: ['typeClass'],
   classNames: ['sticky-element__trigger'],
 
@@ -75,7 +74,7 @@ export default Ember.Component.extend(InViewportMixin, {
       right: 0
     };
     viewportTolerance[this.get('type')] = -this.get('offset');
-    Ember.setProperties(this, {
+    setProperties(this, {
       viewportSpy: true,
       viewportEnabled: true,
       viewportTolerance
