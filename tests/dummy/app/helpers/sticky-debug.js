@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { helper } from '@ember/component/helper';
 
 export function stickyDebug(params) {
   let [stickyness] = params;
@@ -13,4 +13,4 @@ export function stickyDebug(params) {
   }
 }
 
-export default Ember.Helper.helper(stickyDebug);
+export default helper(stickyDebug);

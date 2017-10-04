@@ -1,15 +1,11 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import RSVP from 'rsvp';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('sticky-element', 'Integration | Component | sticky element', {
   integration: true
 });
-
-const {
-  $,
-  RSVP
-} = Ember;
 
 function scrollTo(pos, animate = false) {
   let top;
