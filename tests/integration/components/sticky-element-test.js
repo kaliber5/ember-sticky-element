@@ -2,9 +2,14 @@ import $ from 'jquery';
 import RSVP from 'rsvp';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { registerWaiter } from 'ember-raf-test-waiter';
+import wait from 'ember-test-helpers/wait';
 
 moduleForComponent('sticky-element', 'Integration | Component | sticky element', {
-  integration: true
+  integration: true,
+  before() {
+    registerWaiter();
+  }
 });
 
 function scrollTo(pos, animate = false) {
@@ -46,7 +51,8 @@ function scrollTo(pos, animate = false) {
       $('#ember-testing-container').scrollTop(top);
       resolve();
     }
-  });
+  })
+    .then(wait);
 }
 
 const testCases = [
@@ -315,12 +321,7 @@ testCases.forEach((testCase) => {
 
       return scrollTo(testCase.scrollPosition, scrollAnimate)
         .then(() => {
-          return new RSVP.Promise((resolve) => {
-            setTimeout(() => {
-              assert.equal(this.$('#debug').text().trim(), debug, debug);
-              resolve();
-            }, 20);
-          });
+          assert.equal(this.$('#debug').text().trim(), debug, debug);
         });
     });
   });
@@ -358,12 +359,8 @@ testCases.forEach((testCase) => {
     return scrollTo(testCase.scrollPosition)
       .then(() => {
         this.set('visible', true);
-        return new RSVP.Promise((resolve) => {
-          setTimeout(() => {
-            assert.equal(this.$('#debug').text().trim(), debug, debug);
-            resolve();
-          }, 50);
-        });
+        return wait()
+          .then(() => assert.equal(this.$('#debug').text().trim(), debug, debug));
       });
   });
 

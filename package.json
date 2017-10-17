@@ -43,6 +43,7 @@
     "ember-disable-prototype-extensions": "^1.1.2",
     "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "^1.0.0",
+    "ember-raf-test-waiter": "^0.1.0",
     "ember-resolver": "^4.0.0",
     "ember-source": "~2.16.0",
     "eslint-plugin-ember-suave": "^1.0.0",
