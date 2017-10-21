@@ -79,6 +79,15 @@ boundaries), just add the `bottom` property, with a value of 0 or some other off
 Make sure that the parent element has some positioning applied, so at least `position: relative`, as sticking to the 
 bottom is done by applying `position: absolute` to the sticky element!
 
+#### Disabling
+
+You can set the `enabled` property to false to disable the sticky behavior:
+
+```hbs
+{{#sticky-element enabled=someBooleanProperty}}
+  <h2>Sticky Element</h2>
+{{/sticky-element}}
+```
 
 ### Styling
 
