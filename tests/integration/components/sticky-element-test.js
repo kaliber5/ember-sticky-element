@@ -55,6 +55,17 @@ function scrollTo(pos, animate = false) {
     .then(wait);
 }
 
+function output(sticky) {
+  switch (sticky) {
+    case 'top':
+      return 'Stick to top';
+    case 'bottom':
+      return 'Stick to bottom';
+    default:
+      return 'Not sticky';
+  }
+}
+
 const testCases = [
   {
     size: 'small',
@@ -287,7 +298,6 @@ const testCases = [
     stickToBottom: true,
     sticky: 'bottom'
   }
-
 ];
 
 testCases.forEach((testCase) => {
@@ -307,17 +317,7 @@ testCases.forEach((testCase) => {
         </div>
       `);
 
-      let debug;
-      switch (testCase.sticky) {
-        case 'top':
-          debug = 'Stick to top';
-          break;
-        case 'bottom':
-          debug = 'Stick to bottom';
-          break;
-        default:
-          debug = 'Not sticky';
-      }
+      let debug = output(testCase.sticky);
 
       return scrollTo(testCase.scrollPosition, scrollAnimate)
         .then(() => {
@@ -344,17 +344,7 @@ testCases.forEach((testCase) => {
         </div>
       `);
 
-    let debug;
-    switch (testCase.sticky) {
-      case 'top':
-        debug = 'Stick to top';
-        break;
-      case 'bottom':
-        debug = 'Stick to bottom';
-        break;
-      default:
-        debug = 'Not sticky';
-    }
+    let debug = output(testCase.sticky);
 
     return scrollTo(testCase.scrollPosition)
       .then(() => {
@@ -364,4 +354,33 @@ testCases.forEach((testCase) => {
       });
   });
 
+});
+
+test('can be disabled', function(assert) {
+  this.setProperties({
+    size: 'small',
+    scrollPosition: 'down',
+    offView: false,
+    stickToBottom: false,
+    sticky: 'top'
+  });
+  this.render(hbs`
+    <div class="row">
+      <div class="col {{size}} {{if offView "off"}}">
+        {{#sticky-element class="sticky" enabled=false as |sticky|}}
+          <p id="debug">
+            {{sticky-debug sticky}}
+          </p>
+        {{/sticky-element}}
+      </div>
+    </div>
+  `);
+
+  let debug = output(false);
+
+  return scrollTo('down', true)
+    .then(() => {
+      assert.equal(this.$('#debug').text().trim(), debug, debug);
+      assert.notOk(this.$('.sticky').attr('style'));
+    });
 });

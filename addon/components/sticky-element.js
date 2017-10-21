@@ -31,6 +31,16 @@ export default Component.extend({
   bottom: null,
 
   /**
+   * Set to false to disable sticky behavior
+   *
+   * @property enabled
+   * @type {boolean}
+   * @default true
+   * @public
+   */
+  enabled: true,
+
+  /**
    * @property isSticky
    * @type {boolean}
    * @readOnly
@@ -44,8 +54,8 @@ export default Component.extend({
    * @readOnly
    * @private
    */
-  isStickyTop: computed('parentTop', 'parentBottom', 'isStickyBottom', function() {
-    return this.get('parentTop') === 'top' && !this.get('isStickyBottom');
+  isStickyTop: computed('enabled', 'parentTop', 'parentBottom', 'isStickyBottom', function() {
+    return this.get('enabled') && this.get('parentTop') === 'top' && !this.get('isStickyBottom');
   }).readOnly(),
 
   /**
@@ -54,8 +64,8 @@ export default Component.extend({
    * @readOnly
    * @private
    */
-  isStickyBottom: computed('parentBottom', 'stickToBottom', function() {
-    return this.get('parentBottom') !== 'bottom' && this.get('stickToBottom');
+  isStickyBottom: computed('enabled', 'parentBottom', 'stickToBottom', function() {
+    return this.get('enabled') && this.get('parentBottom') !== 'bottom' && this.get('stickToBottom');
   }).readOnly(),
 
   /**
