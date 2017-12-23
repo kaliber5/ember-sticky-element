@@ -8,6 +8,7 @@ import layout from '../templates/components/sticky-element';
 
 export default Component.extend({
   layout,
+  classNames: ['sticky-element-container'],
   attributeBindings: ['style'],
 
   /**
