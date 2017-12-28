@@ -321,7 +321,7 @@ module('Integration | Component | sticky element', function(hooks) {
         let debug = output(testCase.sticky);
 
         await scrollTo(testCase.scrollPosition, scrollAnimate);
-        assert.equal(this.$('#debug').text().trim(), debug, debug);
+        assert.dom('#debug').hasText(debug, debug);
       });
     });
 
@@ -348,7 +348,7 @@ module('Integration | Component | sticky element', function(hooks) {
       await scrollTo(testCase.scrollPosition);
       this.set('visible', true);
       await settled();
-      assert.equal(this.$('#debug').text().trim(), debug, debug);
+      assert.dom('#debug').hasText(debug, debug);
     });
 
   });
@@ -376,7 +376,7 @@ module('Integration | Component | sticky element', function(hooks) {
     let debug = output(false);
 
     await scrollTo('down', true);
-    assert.equal(this.$('#debug').text().trim(), debug, debug);
-    assert.notOk(this.$('.sticky').attr('style'));
+    assert.dom('#debug').hasText(debug, debug);
+    assert.dom('.sticky').doesNotHaveAttribute('style');
   });
 });
