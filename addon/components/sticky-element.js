@@ -42,6 +42,46 @@ export default Component.extend({
   enabled: true,
 
   /**
+   * The class name set on the element container.
+   *
+   * @property containerClassName
+   * @type {string|null}
+   * @default 'sticky-element'
+   * @public
+   */
+  containerClassName: 'sticky-element',
+
+  /**
+   * The class name set on the element container when it is sticked.
+   *
+   * @property containerStickyClassName
+   * @type {string|null}
+   * @default 'sticky-element--sticky'
+   * @public
+   */
+  containerStickyClassName: 'sticky-element--sticky',
+
+  /**
+   * The class name set on the element container when it is sticked to top.
+   *
+   * @property containerStickyTopClassName
+   * @type {string|null}
+   * @default 'sticky-element--sticky-top'
+   * @public
+   */
+  containerStickyTopClassName: 'sticky-element--sticky-top',
+
+  /**
+   * The class name set on the element container when it is sticked to bottom.
+   *
+   * @property containerStickyBottomClassName
+   * @type {string|null}
+   * @default 'sticky-element--sticky-bottom'
+   * @public
+   */
+  containerStickyBottomClassName: 'sticky-element--sticky-bottom',
+
+  /**
    * @property isSticky
    * @type {boolean}
    * @readOnly
