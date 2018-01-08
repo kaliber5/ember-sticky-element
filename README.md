@@ -93,11 +93,11 @@ You can set the `enabled` property to false to disable the sticky behavior:
 
 #### CSS
 
-The sticky element has a `.sticky-element` class you can use for styling, and a `containerClassName` property to provide additional classes. Furthermore it adds some additional classes
+The sticky element has a `containerClassName` property you can use for styling (by default `.sticky-element`). Furthermore additionals classes can be set:
 when being sticky:
-* `.sticky-element--sticky` class and `containerStickyClassName` property (when sticked either to the top or the bottom)
-* `.sticky-element--sticky-top` class and `containerStickyTopClassName` property (when sticked to the top)
-* `.sticky-element--sticky-bottom` class and `containerStickyBottomClassName` property (when sticked to the bottom)
+* `containerStickyClassName` (by default `.sticky-element--sticky`): when sticked either to the top or the bottom.
+* `containerStickyTopClassName` (by default `.sticky-element--sticky-top`): when sticked to the top.
+* `containerStickyBottomClassName` (by default `.sticky-element--sticky-bottom`): when sticked to the bottom.
 
 #### Content
 

@@ -1,10 +1,10 @@
 {{sticky-element/trigger offset=top enter=(action "parentTopEntered") exit=(action "parentTopExited")}}
 
-<div class="sticky-element
+<div class="
   {{containerClassName}}
-  {{if isSticky (concat " sticky-element--sticky " containerStickyClassName)}}
-  {{if isStickyTop (concat " sticky-element--sticky-top " containerStickyTopClassName)}}
-  {{if isStickyBottom (concat " sticky-element--sticky-bottom " containerStickyBottomClassName)}}"
+  {{if isSticky containerStickyClassName}}
+  {{if isStickyTop containerStickyTopClassName}}
+  {{if isStickyBottom containerStickyBottomClassName}}"
   style={{containerStyle}}>
 
   {{yield
