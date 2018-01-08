@@ -38,7 +38,7 @@ export default Component.extend(InViewportMixin, {
    * @event enter
    * @public
    */
-  enter: null,
+  enter() {},
 
   /**
    * Action when trigger exits viewport
@@ -47,7 +47,7 @@ export default Component.extend(InViewportMixin, {
    * @param {Boolean} top True if element left the viewport from the top
    * @public
    */
-  exit: null,
+  exit() {},
 
   isBeforeViewport() {
     let offset = this.get('type') === 'top' ? this.get('offset') : 0;
@@ -55,11 +55,11 @@ export default Component.extend(InViewportMixin, {
   },
 
   didEnterViewport() {
-    this.sendAction('enter');
+    this.enter();
   },
 
   didExitViewport() {
-    this.sendAction('exit', this.isBeforeViewport());
+    this.exit(this.isBeforeViewport());
   },
 
   /**
