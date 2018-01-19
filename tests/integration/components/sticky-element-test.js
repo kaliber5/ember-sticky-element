@@ -1,10 +1,9 @@
-import $ from 'jquery';
-import RSVP from 'rsvp';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { registerWaiter } from 'ember-raf-test-waiter';
+import _scrollTo from '../../helpers/scroll-to';
 
 const testCases = [
   {
@@ -249,8 +248,8 @@ module('Integration | Component | sticky element', function(hooks) {
 
   function scrollTo(pos, animate = false) {
     let top;
-    let windowHeight = $('#ember-testing-container').height();
-    let innerHeight = $('#ember-testing-container').get(0).scrollHeight;
+    let windowHeight = document.querySelector('#ember-testing-container').offsetHeight;
+    let innerHeight = document.querySelector('#ember-testing-container').scrollHeight;
 
     switch (pos) {
       case 'top':
@@ -260,13 +259,13 @@ module('Integration | Component | sticky element', function(hooks) {
         top = windowHeight / 10;
         break;
       case 'end of parent':
-        top = $('#ember-testing-container .col').height() - windowHeight + 10;
+        top = document.querySelector('#ember-testing-container .col').offsetHeight - windowHeight + 10;
         break;
       case 'into view':
-        top = $('#ember-testing-container .col').get(0).offsetTop - windowHeight + 10;
+        top = document.querySelector('#ember-testing-container .col').offsetTop - windowHeight + 10;
         break;
       case 'out of view':
-        top = $('#ember-testing-container .col').get(0).offsetTop + 10;
+        top = document.querySelector('#ember-testing-container .col').offsetTop + 10;
         break;
       case 'bottom':
         top = innerHeight - windowHeight;
@@ -275,19 +274,16 @@ module('Integration | Component | sticky element', function(hooks) {
         throw new Error(`Unsupported scroll position: ${pos}`);
     }
 
-    return new RSVP.Promise((resolve) => {
-      if (animate) {
-        $('#ember-testing-container')
-          .stop()
-          .animate({ scrollTop: top }, 1000, () => {
-            resolve();
-          });
-      } else {
-        $('#ember-testing-container').scrollTop(top);
-        resolve();
-      }
-    })
-      .then(settled);
+    if (animate) {
+      return _scrollTo(
+        document.querySelector('#ember-testing-container'),
+          top,
+        1000)
+        .then(settled);
+    } else {
+      document.querySelector('#ember-testing-container').scrollTop = top;
+      return settled();
+    }
   }
 
   function output(sticky) {
