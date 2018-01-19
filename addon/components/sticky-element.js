@@ -1,5 +1,4 @@
 import { or, notEmpty } from '@ember/object/computed';
-import $ from 'jquery';
 import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
@@ -200,9 +199,9 @@ export default Component.extend({
    * @private
    */
   updateDimension() {
-    this.set('windowHeight', $(window).height());
-    this.set('ownHeight', this.$().height());
-    this.set('ownWidth', this.$().width());
+    this.set('windowHeight', window.innerHeight);
+    this.set('ownHeight', this.element.offsetHeight);
+    this.set('ownWidth', this.element.offsetWidth);
   },
 
   didInsertElement() {
