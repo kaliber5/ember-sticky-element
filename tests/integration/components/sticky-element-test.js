@@ -268,7 +268,7 @@ module('Integration | Component | sticky element', function(hooks) {
         top = document.querySelector('#ember-testing-container .col').offsetTop + 10;
         break;
       case 'bottom':
-        top = innerHeight - windowHeight;
+        top = innerHeight - windowHeight + 1;
         break;
       default:
         throw new Error(`Unsupported scroll position: ${pos}`);
