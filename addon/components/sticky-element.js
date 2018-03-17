@@ -5,6 +5,17 @@ import { computed } from '@ember/object';
 import { scheduleOnce } from '@ember/runloop';
 import layout from '../templates/components/sticky-element';
 
+function elementPosition(element, offset) {
+  let top = element.getBoundingClientRect().top;
+  if (top - offset <= 0) {
+    return 'top';
+  }
+  if (top + element.offsetHeight + offset <= window.innerHeight) {
+    return 'in';
+  }
+  return 'bottom';
+}
+
 export default Component.extend({
   layout,
   classNames: ['sticky-element-container'],
@@ -152,6 +163,18 @@ export default Component.extend({
   windowHeight: 0,
 
   /**
+   * @property topTriggerElement
+   * @private
+   */
+  topTriggerElement: null,
+
+  /**
+   * @property bottomTriggerElement
+   * @private
+   */
+  bottomTriggerElement: null,
+
+  /**
    * @property offsetBottom
    * @type {number}
    * @private
@@ -204,6 +227,17 @@ export default Component.extend({
     this.set('ownWidth', this.element.offsetWidth);
   },
 
+  updatePosition() {
+    let { topTriggerElement, bottomTriggerElement } = this;
+
+    if (topTriggerElement) {
+      this.set('parentTop', elementPosition(topTriggerElement, this.get('top')));
+    }
+    if (bottomTriggerElement) {
+      this.set('parentBottom', elementPosition(bottomTriggerElement, this.get('offsetBottom')));
+    }
+  },
+
   didInsertElement() {
     this._super(...arguments);
     scheduleOnce('afterRender', this, this.updateDimension);
@@ -214,19 +248,27 @@ export default Component.extend({
       // console.log('parentTopEntered');
       this.set('parentTop', 'in');
     },
-    parentTopExited(top) {
+    parentTopExited() {
       // make sure we captured the right dimensions before getting sticky!
+      // console.log('parentTopExited');
       this.updateDimension();
-      // console.log('parentTopExited', top);
-      this.set('parentTop', top ? 'top' : 'bottom');
+      this.updatePosition();
     },
     parentBottomEntered() {
       // console.log('parentBottomEntered');
       this.set('parentBottom', 'in');
     },
-    parentBottomExited(top) {
-      // console.log('parentBottomExited', top);
-      this.set('parentBottom', top ? 'top' : 'bottom');
+    parentBottomExited() {
+      // console.log('parentBottomExited');
+      this.updatePosition();
+    },
+    registerTopTrigger(element) {
+      this.topTriggerElement = element;
+      this.updatePosition();
+    },
+    registerBottomTrigger(element) {
+      this.bottomTriggerElement = element;
+      this.updatePosition();
     }
   }
 });

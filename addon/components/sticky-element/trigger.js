@@ -38,7 +38,6 @@ export default Component.extend(InViewportMixin, {
    * @event enter
    * @public
    */
-  enter() {},
 
   /**
    * Action when trigger exits viewport
@@ -47,7 +46,6 @@ export default Component.extend(InViewportMixin, {
    * @param {Boolean} top True if element left the viewport from the top
    * @public
    */
-  exit() {},
 
   isBeforeViewport() {
     let offset = this.get('type') === 'top' ? this.get('offset') : 0;
@@ -59,7 +57,7 @@ export default Component.extend(InViewportMixin, {
   },
 
   didExitViewport() {
-    this.exit(this.isBeforeViewport());
+    this.exit();
   },
 
   /**
@@ -79,11 +77,31 @@ export default Component.extend(InViewportMixin, {
       viewportEnabled: true,
       viewportTolerance
     });
+
+    this.updateIntersectionObserver();
+  },
+
+  /**
+   * Updates intersectionObserver after options have changed
+   *
+   * @method updateIntersectionObserver
+   * @private
+   */
+  updateIntersectionObserver() {
+    if (this.intersectionObserver) {
+      this.intersectionObserver.unobserve(this.element);
+      this._setViewportEntered();
+    }
+  },
+
+  init() {
+    this._super(...arguments);
+    this.updateViewportOptions();
   },
 
   didInsertElement() {
-    this.updateViewportOptions();
     this._super(...arguments);
+    this.registerElement(this.element);
   },
 
   _onOffsetChange: observer('offset', function() {

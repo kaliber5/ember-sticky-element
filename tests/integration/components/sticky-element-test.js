@@ -246,7 +246,7 @@ module('Integration | Component | sticky element', function(hooks) {
     registerWaiter();
   });
 
-  function scrollTo(pos, animate = false) {
+  function scrollTo(pos, animate = true) {
     let top;
     let windowHeight = document.querySelector('#ember-testing-container').offsetHeight;
     let innerHeight = document.querySelector('#ember-testing-container').scrollHeight;
@@ -278,7 +278,7 @@ module('Integration | Component | sticky element', function(hooks) {
       return _scrollTo(
         document.querySelector('#ember-testing-container'),
           top,
-        1000)
+        100)
         .then(settled);
     } else {
       document.querySelector('#ember-testing-container').scrollTop = top;
@@ -298,11 +298,10 @@ module('Integration | Component | sticky element', function(hooks) {
   }
 
   testCases.forEach((testCase) => {
-    [true, false].forEach((scrollAnimate) => {
-      test(`Scrolling | Size: ${testCase.size}, offView: ${testCase.offView}, stick to bottom: ${testCase.stickToBottom === false ? 'false' : 'true'}, scroll position: ${testCase.scrollPosition}, slow scroll: ${scrollAnimate}`, async function(assert) {
+      test(`Scrolling | Size: ${testCase.size}, offView: ${testCase.offView}, stick to bottom: ${testCase.stickToBottom === false ? 'false' : 'true'}, scroll position: ${testCase.scrollPosition}`, async function(assert) {
         this.setProperties(testCase);
         this.set('bottom', testCase.stickToBottom ? 0 : null);
-        await this.render(hbs`
+        await render(hbs`
           <div class="row">
             <div class="col {{size}} {{if offView "off"}}">
               {{#sticky-element class="sticky" bottom=bottom as |sticky|}}
@@ -316,16 +315,16 @@ module('Integration | Component | sticky element', function(hooks) {
 
         let debug = output(testCase.sticky);
 
-        await scrollTo(testCase.scrollPosition, scrollAnimate);
+        await scrollTo(testCase.scrollPosition);
+        // await this.pauseTest();
         assert.dom('#debug').hasText(debug, debug);
       });
-    });
 
     test(`Late insert | Size: ${testCase.size}, offView: ${testCase.offView}, stick to bottom: ${testCase.stickToBottom === false ? 'false' : 'true'}, scroll position: ${testCase.scrollPosition}`, async function(assert) {
       this.setProperties(testCase);
       this.set('bottom', testCase.stickToBottom ? 0 : null);
       this.set('visible', false);
-      await this.render(hbs`
+      await render(hbs`
           <div class="row">
             <div class="col {{size}} {{if offView "off"}}">
               {{#if visible}}
