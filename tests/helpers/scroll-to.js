@@ -10,7 +10,7 @@ function _scrollTo(element, to, duration, cb) {
   if (duration <= 0) return;
   let difference = to - element.scrollTop;
   let perTick = difference / duration * 10;
-  let limit = difference < 0 ? Math.min : Math.max;
+  let limit = difference < 0 ? Math.max : Math.min;
 
   setTimeout(function() {
     element.scrollTop = limit(element.scrollTop + perTick, to);
