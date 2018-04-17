@@ -2,7 +2,7 @@ import { or, notEmpty } from '@ember/object/computed';
 import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { scheduleOnce } from '@ember/runloop';
+import { scheduleOnce, debounce } from '@ember/runloop';
 import layout from '../templates/components/sticky-element';
 
 function elementPosition(element, offset) {
@@ -52,6 +52,17 @@ export default Component.extend({
   enabled: true,
 
   /**
+   * Set to false to disable sticky behavior
+   *
+   * @property enabled
+   * @type {Integer}
+   * @default 0
+   * @public
+   */
+  notStickyBelow: 0,
+
+
+  /**
    * The class name set on the element container.
    *
    * @property containerClassName
@@ -90,6 +101,16 @@ export default Component.extend({
    * @public
    */
   containerStickyBottomClassName: 'sticky-element--sticky-bottom',
+
+  /**
+   * @property windowWidthOverBreakPoint
+   * @type {boolean}
+   * @readOnly
+   * @private
+   */
+  windowWidthOverBreakPoint: computed('windowWidth', function() {
+    return this.get('windowWidth') > this.get('notStickyBelow');
+  }).readOnly(),
 
   /**
    * @property isSticky
@@ -163,6 +184,13 @@ export default Component.extend({
   windowHeight: 0,
 
   /**
+   * @property windowWidth
+   * @type {number}
+   * @private
+   */
+  windowWidth: 0,
+
+  /**
    * @property topTriggerElement
    * @private
    */
@@ -175,6 +203,20 @@ export default Component.extend({
   bottomTriggerElement: null,
 
   /**
+   * Dynamic style for the components element
+   *
+   * @property style
+   * @type {string}
+   * @private
+   */
+  style: computed('isSticky', 'ownHeight', 'ownWidth', function() {
+    let height = this.get('ownHeight');
+    if (height > 0 && this.get('isSticky')) {
+      return htmlSafe(`height: ${height}px;`);
+    }
+  }),
+
+  /**
    * @property offsetBottom
    * @type {number}
    * @private
@@ -185,37 +227,46 @@ export default Component.extend({
   }),
 
   /**
-   * Dynamic style for the components element
-   *
-   * @property style
-   * @type {string}
-   * @private
-   */
-  style: computed('isSticky', 'ownHeight', 'ownWidth', function() {
-    let height = this.get('ownHeight');
-    let width = this.get('ownWidth');
-    if (height > 0 && this.get('isSticky')) {
-      return htmlSafe(`height: ${height}px; width: ${width}px`);
-    }
-  }),
-
-  /**
    * Dynamic style for the sticky container (`position: fixed`)
    *
    * @property containerStyle
    * @type {string}
    * @private
    */
-  containerStyle: computed('isStickyTop', 'isStickyBottom', 'top', 'bottom', function() {
-    if (this.get('isStickyBottom')) {
+  containerStyle: computed('isStickyTop', 'isStickyBottom', 'top', 'bottom', 'ownWidth', 'windowWidthOverBreakPoint', function() {
+    if (this.get('isStickyBottom') && this.get('windowWidthOverBreakPoint')) {
       let style = `position: absolute; bottom: ${this.get('bottom')}px; width: ${this.get('ownWidth')}px`;
       return htmlSafe(style);
     }
-    if (this.get('isStickyTop')) {
+    if (this.get('isStickyTop') && this.get('windowWidthOverBreakPoint')) {
       let style = `position: fixed; top: ${this.get('top')}px; width: ${this.get('ownWidth')}px`;
       return htmlSafe(style);
     }
   }),
+
+
+  /**
+   * Add listener to update sticky element width on resize event
+   * @method initResizeEventListener
+   * @private
+   */
+  initResizeEventListener() {
+    window.addEventListener('resize', this.debouncedUpdateDimension.bind(this), false);
+  },
+  /**
+   * @method removeResizeEventListener
+   * @private
+   */
+  removeResizeEventListener() {
+    window.removeEventListener('resize', this.debouncedUpdateDimension.bind(this), false);
+  },
+  /**
+   * @method debouncedUpdateDimension
+   * @private
+   */
+  debouncedUpdateDimension() {
+    debounce(this, this.updateDimension, 30);
+  },
 
   /**
    * @method updateDimension
@@ -223,6 +274,7 @@ export default Component.extend({
    */
   updateDimension() {
     this.set('windowHeight', window.innerHeight);
+    this.set('windowWidth', window.innerWidth);
     this.set('ownHeight', this.element.offsetHeight);
     this.set('ownWidth', this.element.offsetWidth);
   },
@@ -241,6 +293,11 @@ export default Component.extend({
   didInsertElement() {
     this._super(...arguments);
     scheduleOnce('afterRender', this, this.updateDimension);
+    this.initResizeEventListener();
+  },
+
+  willDestroy() {
+    this.removeResizeEventListener();
   },
 
   actions: {
