@@ -19,6 +19,7 @@ function elementPosition(element, offset) {
 export default Component.extend({
   layout,
   classNames: ['sticky-element-container'],
+  attributeBindings: ['style'],
 
   /**
    * The offset from the top of the viewport when to start sticking to the top
@@ -200,6 +201,20 @@ export default Component.extend({
    * @private
    */
   bottomTriggerElement: null,
+
+  /**
+   * Dynamic style for the components element
+   *
+   * @property style
+   * @type {string}
+   * @private
+   */
+  style: computed('isSticky', 'ownHeight', 'ownWidth', function() {
+    let height = this.get('ownHeight');
+    if (height > 0 && this.get('isSticky')) {
+      return htmlSafe(`height: ${height}px;`);
+    }
+  }),
 
   /**
    * @property offsetBottom
