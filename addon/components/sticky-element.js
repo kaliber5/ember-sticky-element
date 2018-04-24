@@ -246,6 +246,9 @@ export default Component.extend({
    * @private
    */
   updateDimension() {
+    if(this.get('isDestroyed') || this.get('isDestroying')) {
+      return false;
+    }
     this.set('windowHeight', window.innerHeight);
     this.set('ownHeight', this.element.offsetHeight);
     this.set('ownWidth', this.element.offsetWidth);

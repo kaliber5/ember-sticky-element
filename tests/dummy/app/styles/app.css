@@ -60,6 +60,14 @@ h1 {
     margin-right: 2px;
 }
 
+.large-container {
+    width: 500px;
+}
+
+.small-container {
+    width: 300px;
+}
+
 /*
 This is needed for testing!
 */
