@@ -222,7 +222,8 @@ export default Component.extend({
    * @private
    */
   initResizeEventListener() {
-    window.addEventListener('resize', this.debouncedUpdateDimension.bind(this), false);
+    this._resizeListener = () => this.debouncedUpdateDimension();
+    window.addEventListener('resize', this._resizeListener, false);
   },
 
   /**
@@ -230,7 +231,7 @@ export default Component.extend({
    * @private
    */
   removeResizeEventListener() {
-    window.removeEventListener('resize', this.debouncedUpdateDimension.bind(this), false);
+    window.removeEventListener('resize', this._resizeListener, false);
   },
 
   /**
@@ -271,7 +272,7 @@ export default Component.extend({
     this.initResizeEventListener();
   },
 
-  willDestroy() {
+  willDestroyElement() {
     this.removeResizeEventListener();
   },
 
