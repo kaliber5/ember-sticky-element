@@ -5,239 +5,50 @@ import hbs from 'htmlbars-inline-precompile';
 import { registerWaiter } from 'ember-raf-test-waiter';
 import _scrollTo from '../../helpers/scroll-to';
 
-const testCases = [
-  {
-    size: 'small',
-    scrollPosition: 'top',
-    offView: false,
-    stickToBottom: false,
-    sticky: false
-  },
-  {
-    size: 'small',
-    scrollPosition: 'down',
-    offView: false,
-    stickToBottom: false,
-    sticky: 'top'
-  },
-  {
-    size: 'small',
-    scrollPosition: 'end of parent',
-    offView: false,
-    stickToBottom: false,
-    sticky: 'top'
-  },
-  {
-    size: 'small',
-    scrollPosition: 'bottom',
-    offView: false,
-    stickToBottom: false,
-    sticky: 'top'
-  },
+const testProps = {
+  size: ['small', 'large'],
+  scrollPosition: ['top', 'down', 'end of parent', 'bottom', 'into view', 'out of view'],
+  offView: [false, true],
+  stickToBottom: [false, true]
+};
 
-  {
-    size: 'large',
-    scrollPosition: 'top',
-    offView: false,
-    stickToBottom: false,
-    sticky: false
-  },
-  {
-    size: 'large',
-    scrollPosition: 'down',
-    offView: false,
-    stickToBottom: false,
-    sticky: 'top'
-  },
-  {
-    size: 'large',
-    scrollPosition: 'end of parent',
-    offView: false,
-    stickToBottom: false,
-    sticky: 'top'
-  },
-  {
-    size: 'large',
-    scrollPosition: 'bottom',
-    offView: false,
-    stickToBottom: false,
-    sticky: 'top'
-  },
+const testCases = [];
 
-  {
-    size: 'small',
-    scrollPosition: 'top',
-    offView: false,
-    stickToBottom: true,
-    sticky: false
-  },
-  {
-    size: 'small',
-    scrollPosition: 'down',
-    offView: false,
-    stickToBottom: true,
-    sticky: 'top'
-  },
-  {
-    size: 'small',
-    scrollPosition: 'end of parent',
-    offView: false,
-    stickToBottom: true,
-    sticky: 'top'
-  },
-  {
-    size: 'small',
-    scrollPosition: 'bottom',
-    offView: false,
-    stickToBottom: true,
-    sticky: 'bottom'
-  },
+testProps.size.forEach(size => {
+  testProps.scrollPosition.forEach(scrollPosition => {
+    testProps.offView.forEach(offView => {
+      testProps.stickToBottom.forEach(stickToBottom => {
+        let sticky = false;
 
-  {
-    size: 'large',
-    scrollPosition: 'top',
-    offView: false,
-    stickToBottom: true,
-    sticky: false
-  },
-  {
-    size: 'large',
-    scrollPosition: 'down',
-    offView: false,
-    stickToBottom: true,
-    sticky: 'top'
-  },
-  {
-    size: 'large',
-    scrollPosition: 'end of parent',
-    offView: false,
-    stickToBottom: true,
-    sticky: 'bottom'
-  },
-  {
-    size: 'large',
-    scrollPosition: 'bottom',
-    offView: false,
-    stickToBottom: true,
-    sticky: 'bottom'
-  },
+        if (
+          scrollPosition === 'down' && offView === false
+          || scrollPosition === 'end of parent'
+          || scrollPosition === 'out of view'
+          || scrollPosition === 'bottom' && stickToBottom === false
+          || scrollPosition === 'bottom' && offView === true
+        ) {
+          sticky = 'top';
+        }
 
-  {
-    size: 'small',
-    scrollPosition: 'top',
-    offView: true,
-    stickToBottom: false,
-    sticky: false
-  },
-  {
-    size: 'small',
-    scrollPosition: 'into view',
-    offView: true,
-    stickToBottom: false,
-    sticky: false
-  },
-  {
-    size: 'small',
-    scrollPosition: 'out of view',
-    offView: true,
-    stickToBottom: false,
-    sticky: 'top'
-  },
-  {
-    size: 'small',
-    scrollPosition: 'bottom',
-    offView: true,
-    stickToBottom: false,
-    sticky: 'top'
-  },
+        if (
+          scrollPosition === 'bottom' && stickToBottom === true && offView === false
+          || scrollPosition === 'end of parent' && stickToBottom === true && size === 'large'
+          || scrollPosition === 'bottom' && stickToBottom === true && size === 'large' && offView === true
+        ) {
+          sticky = 'bottom';
+        }
 
-  {
-    size: 'large',
-    scrollPosition: 'top',
-    offView: true,
-    stickToBottom: false,
-    sticky: false
-  },
-  {
-    size: 'large',
-    scrollPosition: 'into view',
-    offView: true,
-    stickToBottom: false,
-    sticky: false
-  },
-  {
-    size: 'large',
-    scrollPosition: 'out of view',
-    offView: true,
-    stickToBottom: false,
-    sticky: 'top'
-  },
-  {
-    size: 'large',
-    scrollPosition: 'bottom',
-    offView: true,
-    stickToBottom: false,
-    sticky: 'top'
-  },
-
-  {
-    size: 'small',
-    scrollPosition: 'top',
-    offView: true,
-    stickToBottom: true,
-    sticky: false
-  },
-  {
-    size: 'small',
-    scrollPosition: 'into view',
-    offView: true,
-    stickToBottom: true,
-    sticky: false
-  },
-  {
-    size: 'small',
-    scrollPosition: 'out of view',
-    offView: true,
-    stickToBottom: true,
-    sticky: 'top'
-  },
-  {
-    size: 'small',
-    scrollPosition: 'bottom',
-    offView: true,
-    stickToBottom: true,
-    sticky: 'top'
-  },
-
-  {
-    size: 'large',
-    scrollPosition: 'top',
-    offView: true,
-    stickToBottom: true,
-    sticky: false
-  },
-  {
-    size: 'large',
-    scrollPosition: 'into view',
-    offView: true,
-    stickToBottom: true,
-    sticky: false
-  },
-  {
-    size: 'large',
-    scrollPosition: 'out of view',
-    offView: true,
-    stickToBottom: true,
-    sticky: 'top'
-  },
-  {
-    size: 'large',
-    scrollPosition: 'bottom',
-    offView: true,
-    stickToBottom: true,
-    sticky: 'bottom'
-  }
-];
+        testCases.push({
+          size,
+          scrollPosition,
+          offView,
+          stickToBottom,
+          sticky
+        })
+      })
+    })
+  })
+});
 
 module('Integration | Component | sticky element', function(hooks) {
   setupRenderingTest(hooks);
@@ -259,10 +70,10 @@ module('Integration | Component | sticky element', function(hooks) {
         top = windowHeight / 10;
         break;
       case 'end of parent':
-        top = document.querySelector('#ember-testing-container .col').offsetHeight - windowHeight + 10;
+        top = document.querySelector('#ember-testing-container .col').offsetTop + document.querySelector('#ember-testing-container .col').offsetHeight - windowHeight + 10;
         break;
       case 'into view':
-        top = document.querySelector('#ember-testing-container .col').offsetTop - windowHeight + 10;
+        top = Math.max(document.querySelector('#ember-testing-container .col').offsetTop - windowHeight + 10, 0);
         break;
       case 'out of view':
         top = document.querySelector('#ember-testing-container .col').offsetTop + 10;
@@ -277,7 +88,7 @@ module('Integration | Component | sticky element', function(hooks) {
     if (animate) {
       return _scrollTo(
         document.querySelector('#ember-testing-container'),
-          top,
+        top,
         100)
         .then(settled);
     } else {
@@ -298,10 +109,10 @@ module('Integration | Component | sticky element', function(hooks) {
   }
 
   testCases.forEach((testCase) => {
-      test(`Scrolling | Size: ${testCase.size}, offView: ${testCase.offView}, stick to bottom: ${testCase.stickToBottom === false ? 'false' : 'true'}, scroll position: ${testCase.scrollPosition}`, async function(assert) {
-        this.setProperties(testCase);
-        this.set('bottom', testCase.stickToBottom ? 0 : null);
-        await render(hbs`
+    test(`Scrolling | Size: ${testCase.size}, offView: ${testCase.offView}, stick to bottom: ${testCase.stickToBottom === false ? 'false' : 'true'}, scroll position: ${testCase.scrollPosition}`, async function(assert) {
+      this.setProperties(testCase);
+      this.set('bottom', testCase.stickToBottom ? 0 : null);
+      await render(hbs`
           <div class="row">
             <div class="col {{size}} {{if offView "off"}}">
               {{#sticky-element class="sticky" bottom=bottom as |sticky|}}
@@ -313,12 +124,12 @@ module('Integration | Component | sticky element', function(hooks) {
           </div>
         `);
 
-        let debug = output(testCase.sticky);
+      let debug = output(testCase.sticky);
 
-        await scrollTo(testCase.scrollPosition);
-        // await this.pauseTest();
-        assert.dom('#debug').hasText(debug, debug);
-      });
+      await scrollTo(testCase.scrollPosition);
+      // await this.pauseTest();
+      assert.dom('#debug').hasText(debug, debug);
+    });
 
     test(`Late insert | Size: ${testCase.size}, offView: ${testCase.offView}, stick to bottom: ${testCase.stickToBottom === false ? 'false' : 'true'}, scroll position: ${testCase.scrollPosition}`, async function(assert) {
       this.setProperties(testCase);
