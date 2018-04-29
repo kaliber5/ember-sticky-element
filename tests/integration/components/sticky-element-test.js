@@ -345,7 +345,6 @@ module('Integration | Component | sticky element', function(hooks) {
       await settled();
       assert.dom('#debug').hasText(debug, debug);
     });
-
   });
 
   test('can be disabled', async function(assert) {
@@ -373,5 +372,40 @@ module('Integration | Component | sticky element', function(hooks) {
     await scrollTo('down', true);
     assert.dom('#debug').hasText(debug, debug);
     assert.dom('.sticky').doesNotHaveAttribute('style');
+  });
+
+  test('Is resizable', async function(assert) {
+    let stickyElementWidth;
+    this.setProperties({
+      size: 'small',
+      scrollPosition: 'down',
+      offView: false,
+      stickToBottom: false,
+      sticky: 'top'
+    });
+    this.set('containerWidth', 'width:500px');
+    await render(hbs`
+      <div class="row">
+        <div class="col {{size}} {{if offView "off"}}" style={{{containerWidth}}}>
+          {{#sticky-element class="sticky" bottom=bottom as |sticky|}}
+            <p id="debug">
+              {{sticky-debug sticky}}
+            </p>
+          {{/sticky-element}}
+        </div>
+      </div>
+    `);
+    let debug = output('top');
+    await scrollTo('down', true);
+    assert.dom('#debug').hasText(debug, debug);
+    stickyElementWidth = document.querySelector('.sticky-element').clientWidth;
+    assert.equal(stickyElementWidth, 500);
+    this.set('containerWidth', 'width:300px');
+    await settled();
+    window.dispatchEvent(new Event('resize'));
+    await settled();
+    stickyElementWidth = document.querySelector('.sticky-element').clientWidth;
+    assert.equal(stickyElementWidth, 300);
+    assert.dom('#debug').hasText(debug, debug);
   });
 });

@@ -2,7 +2,7 @@ import { or, notEmpty } from '@ember/object/computed';
 import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { scheduleOnce } from '@ember/runloop';
+import { scheduleOnce, debounce } from '@ember/runloop';
 import layout from '../templates/components/sticky-element';
 
 function elementPosition(element, offset) {
@@ -193,9 +193,8 @@ export default Component.extend({
    */
   style: computed('isSticky', 'ownHeight', 'ownWidth', function() {
     let height = this.get('ownHeight');
-    let width = this.get('ownWidth');
     if (height > 0 && this.get('isSticky')) {
-      return htmlSafe(`height: ${height}px; width: ${width}px`);
+      return htmlSafe(`height: ${height}px;`);
     }
   }),
 
@@ -206,7 +205,7 @@ export default Component.extend({
    * @type {string}
    * @private
    */
-  containerStyle: computed('isStickyTop', 'isStickyBottom', 'top', 'bottom', function() {
+  containerStyle: computed('isStickyTop', 'isStickyBottom', 'top', 'bottom', 'ownWidth', function() {
     if (this.get('isStickyBottom')) {
       let style = `position: absolute; bottom: ${this.get('bottom')}px; width: ${this.get('ownWidth')}px`;
       return htmlSafe(style);
@@ -218,10 +217,39 @@ export default Component.extend({
   }),
 
   /**
+   * Add listener to update sticky element width on resize event
+   * @method initResizeEventListener
+   * @private
+   */
+  initResizeEventListener() {
+    this._resizeListener = () => this.debouncedUpdateDimension();
+    window.addEventListener('resize', this._resizeListener, false);
+  },
+
+  /**
+   * @method removeResizeEventListener
+   * @private
+   */
+  removeResizeEventListener() {
+    window.removeEventListener('resize', this._resizeListener, false);
+  },
+
+  /**
+   * @method debouncedUpdateDimension
+   * @private
+   */
+  debouncedUpdateDimension() {
+    debounce(this, this.updateDimension, 30);
+  },
+
+  /**
    * @method updateDimension
    * @private
    */
   updateDimension() {
+    if(this.get('isDestroyed') || this.get('isDestroying')) {
+      return false;
+    }
     this.set('windowHeight', window.innerHeight);
     this.set('ownHeight', this.element.offsetHeight);
     this.set('ownWidth', this.element.offsetWidth);
@@ -241,6 +269,11 @@ export default Component.extend({
   didInsertElement() {
     this._super(...arguments);
     scheduleOnce('afterRender', this, this.updateDimension);
+    this.initResizeEventListener();
+  },
+
+  willDestroyElement() {
+    this.removeResizeEventListener();
   },
 
   actions: {
