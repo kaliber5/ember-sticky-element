@@ -4,10 +4,11 @@ import { render, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { registerWaiter } from 'ember-raf-test-waiter';
 import _scrollTo from '../../helpers/scroll-to';
+import { resolve } from 'rsvp';
 
 const testProps = {
-  size: ['small', 'large'],
-  scrollPosition: ['top', 'down', 'end of parent', 'bottom', 'into view', 'out of view'],
+  size: ['xsmall', 'small', 'large'],
+  scrollPosition: ['top', 'down', 'end of parent', 'bottom', 'into view', 'out of view', 'bottom:down'],
   offView: [false, true],
   stickToBottom: [false, true]
 };
@@ -21,7 +22,8 @@ testProps.size.forEach(size => {
         let sticky = false;
 
         if (
-          scrollPosition === 'down' && offView === false
+          scrollPosition === 'bottom:down' && offView === false
+          || scrollPosition === 'down' && offView === false
           || scrollPosition === 'end of parent'
           || scrollPosition === 'out of view'
           || scrollPosition === 'bottom' && stickToBottom === false
@@ -57,10 +59,14 @@ module('Integration | Component | sticky element', function(hooks) {
     registerWaiter();
   });
 
-  function scrollTo(pos, animate = true) {
+  function scrollTo(pos, duration = 50) {
+    return pos.split(':').reduce((promise, pos) => promise.then(() => singleScrollTo(pos, duration)), resolve());
+  }
+
+  function singleScrollTo(pos, duration) {
     let top;
-    let windowHeight = document.querySelector('#ember-testing-container').offsetHeight;
-    let innerHeight = document.querySelector('#ember-testing-container').scrollHeight;
+    let windowHeight = window.innerHeight;
+    let innerHeight = document.body.scrollHeight;
 
     switch (pos) {
       case 'top':
@@ -79,17 +85,17 @@ module('Integration | Component | sticky element', function(hooks) {
         top = document.querySelector('#ember-testing-container .col').offsetTop + 10;
         break;
       case 'bottom':
-        top = innerHeight - windowHeight + 1;
+        top = innerHeight - windowHeight;
         break;
       default:
         throw new Error(`Unsupported scroll position: ${pos}`);
     }
 
-    if (animate) {
+    if (duration > 0) {
       return _scrollTo(
-        document.querySelector('#ember-testing-container'),
+        document.body,
         top,
-        100)
+        duration)
         .then(settled);
     } else {
       document.querySelector('#ember-testing-container').scrollTop = top;
@@ -126,7 +132,7 @@ module('Integration | Component | sticky element', function(hooks) {
 
       let debug = output(testCase.sticky);
 
-      await scrollTo(testCase.scrollPosition);
+      await scrollTo(testCase.scrollPosition, testCase.size === 'xsmall' ? 500 : 50);
       // await this.pauseTest();
       assert.dom('#debug').hasText(debug, debug);
     });
@@ -180,7 +186,7 @@ module('Integration | Component | sticky element', function(hooks) {
 
     let debug = output(false);
 
-    await scrollTo('down', true);
+    await scrollTo('down');
     assert.dom('#debug').hasText(debug, debug);
     assert.dom('.sticky').doesNotHaveAttribute('style');
   });
@@ -207,7 +213,7 @@ module('Integration | Component | sticky element', function(hooks) {
       </div>
     `);
     let debug = output('top');
-    await scrollTo('down', true);
+    await scrollTo('down');
     assert.dom('#debug').hasText(debug, debug);
     stickyElementWidth = document.querySelector('.sticky-element').clientWidth;
     assert.equal(stickyElementWidth, 500);

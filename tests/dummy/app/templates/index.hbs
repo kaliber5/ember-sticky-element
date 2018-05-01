@@ -3,7 +3,7 @@
 <div class="demo row">
   <div class="col small">
     {{#sticky-element class="sticky" as |sticky|}}
-      
+
       <p>small, not sticky to bottom</p>
       <p class="debug">
         {{sticky-debug sticky}}
@@ -13,7 +13,7 @@
 
   <div class="col small bottom">
     {{#sticky-element class="sticky" bottom=0 as |sticky|}}
-      
+
       <p>small, sticky to bottom</p>
       <p class="debug">
         {{sticky-debug sticky}}
@@ -23,7 +23,7 @@
 
   <div class="col small bottom">
     {{#sticky-element top=50 class="sticky" bottom=0 as |sticky|}}
-      
+
       <p>small, sticky to bottom, with offset</p>
       <p class="debug">
         {{sticky-debug sticky}}
@@ -33,7 +33,7 @@
 
   <div class="col large">
     {{#sticky-element class="sticky" as |sticky|}}
-      
+
       <p>large, not sticky to bottom</p>
       <p class="debug">
         {{sticky-debug sticky}}
@@ -53,7 +53,7 @@
 
   <div class="col small off">
     {{#sticky-element class="sticky" as |sticky|}}
-      
+
       <p>small, not sticky to bottom, off view</p>
       <p class="debug">
         {{sticky-debug sticky}}
@@ -63,7 +63,7 @@
 
   <div class="col small bottom off">
     {{#sticky-element class="sticky" bottom=0 as |sticky|}}
-      
+
       <p>small, sticky to bottom, off view</p>
       <p class="debug">
         {{sticky-debug sticky}}
@@ -73,7 +73,7 @@
 
   <div class="col small bottom off">
     {{#sticky-element top=50 class="sticky" bottom=0 as |sticky|}}
-      
+
       <p>small, sticky to bottom, with offset, off view</p>
       <p class="debug">
         {{sticky-debug sticky}}
@@ -83,7 +83,7 @@
 
   <div class="col large off">
     {{#sticky-element class="sticky" as |sticky|}}
-      
+
       <p>large, not sticky to bottom, off view</p>
       <p class="debug">
         {{sticky-debug sticky}}
@@ -93,8 +93,18 @@
 
   <div class="col large bottom off">
     {{#sticky-element class="sticky" bottom=0 as |sticky|}}
-      
+
       <p>large, sticky to bottom, off view</p>
+      <p class="debug">
+        {{sticky-debug sticky}}
+      </p>
+    {{/sticky-element}}
+  </div>
+
+  <div class="col xsmall bottom">
+    {{#sticky-element class="sticky" bottom=0 as |sticky|}}
+
+      <p>xsmall, sticky to bottom</p>
       <p class="debug">
         {{sticky-debug sticky}}
       </p>
