@@ -1,16 +1,19 @@
+import Ember from 'ember';
 import { or, notEmpty } from '@ember/object/computed';
 import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { scheduleOnce, debounce } from '@ember/runloop';
+import { later, cancel, debounce } from '@ember/runloop';
 import layout from '../templates/components/sticky-element';
 
-function elementPosition(element, offset) {
+const { testing } = Ember;
+
+function elementPosition(element, offseTop, offsetBottom) {
   let top = element.getBoundingClientRect().top;
-  if (top - offset <= 0) {
+  if (top - offseTop < 0) {
     return 'top';
   }
-  if (top + element.offsetHeight + offset <= window.innerHeight) {
+  if (top + element.offsetHeight + offsetBottom <= window.innerHeight) {
     return 'in';
   }
   return 'bottom';
@@ -234,6 +237,23 @@ export default Component.extend({
     window.removeEventListener('resize', this._resizeListener, false);
   },
 
+  _pollTask() {
+    this.updatePosition();
+    this.initPollTask();
+  },
+
+  initPollTask() {
+    if (!testing) {
+      this._pollTimer = later(this, this._pollTask, 500);
+    }
+  },
+
+  removePollTask() {
+    if (this._pollTimer) {
+      cancel(this._pollTimer);
+    }
+  },
+
   /**
    * @method debouncedUpdateDimension
    * @private
@@ -259,21 +279,24 @@ export default Component.extend({
     let { topTriggerElement, bottomTriggerElement } = this;
 
     if (topTriggerElement) {
-      this.set('parentTop', elementPosition(topTriggerElement, this.get('top')));
+      this.set('parentTop', elementPosition(topTriggerElement, this.get('top'), 0));
     }
     if (bottomTriggerElement) {
-      this.set('parentBottom', elementPosition(bottomTriggerElement, this.get('offsetBottom')));
+      this.set('parentBottom', elementPosition(bottomTriggerElement, 0, this.get('offsetBottom')));
     }
   },
 
   didInsertElement() {
     this._super(...arguments);
-    scheduleOnce('afterRender', this, this.updateDimension);
+    this.updateDimension();
+    // scheduleOnce('afterRender', this, this.updateDimension);
     this.initResizeEventListener();
+    this.initPollTask();
   },
 
   willDestroyElement() {
     this.removeResizeEventListener();
+    this.removePollTask();
   },
 
   actions: {

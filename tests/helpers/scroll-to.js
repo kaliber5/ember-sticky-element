@@ -6,18 +6,20 @@ export default function scrollTo(element, to, duration) {
   });
 }
 
+const step = 1;
+
 function _scrollTo(element, to, duration, cb) {
   if (duration <= 0) return;
-  let difference = to - element.scrollTop;
-  let perTick = difference / duration * 10;
+  let difference = to - window.scrollY;
+  let perTick = difference / duration * step;
   let limit = difference < 0 ? Math.max : Math.min;
 
   setTimeout(function() {
-    element.scrollTop = limit(element.scrollTop + perTick, to);
-    if (element.scrollTop === to) {
+    window.scroll(0, limit(window.scrollY + perTick, to));
+    if (window.scrollY === to) {
       cb();
       return;
     }
-    _scrollTo(element, to, duration - 10, cb);
-  }, 10);
+    _scrollTo(element, to, duration - step, cb);
+  }, step);
 }

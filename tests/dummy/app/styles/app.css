@@ -26,7 +26,6 @@ h1 {
 }
 
 .sticky-element {
-    background-color: greenyellow;
     overflow: hidden;
     box-sizing: border-box;
 }
@@ -34,6 +33,11 @@ h1 {
 .small .sticky-element {
     background-color: lightskyblue;
     height: 50vh;
+}
+
+.xsmall .sticky-element {
+    background-color: greenyellow;
+    height: 10px;
 }
 
 .large .sticky-element {
@@ -64,14 +68,20 @@ h1 {
 This is needed for testing!
 */
 #ember-testing-container {
-    position: absolute !important;
-    top: 0 !important;
-    bottom: 0 !important;
+    /*position: absolute !important;*/
+    /*top: 0 !important;*/
+    /*bottom: 0 !important;*/
     height: auto !important;
+    border: none !important;
+
 }
 
 #ember-testing {
     width: 100% !important;
     height: 100% !important;
     transform: none !important;
+}
+
+#qunit {
+    position: absolute;
 }
