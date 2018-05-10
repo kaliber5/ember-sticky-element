@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { observer, computed, setProperties } from '@ember/object';
+import { scheduleOnce } from '@ember/runloop';
 import InViewportMixin from 'ember-in-viewport';
 
 export default Component.extend(InViewportMixin, {
@@ -105,7 +106,7 @@ export default Component.extend(InViewportMixin, {
   },
 
   _onOffsetChange: observer('offset', function() {
-    this.updateViewportOptions();
+    scheduleOnce('afterRender', this, this.updateViewportOptions);
   }),
 
   _bindScrollDirectionListener() {},
