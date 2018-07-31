@@ -276,6 +276,9 @@ export default Component.extend({
   },
 
   updatePosition() {
+    if(this.get('isDestroyed') || this.get('isDestroying')) {
+      return;
+    }
     let { topTriggerElement, bottomTriggerElement } = this;
 
     if (topTriggerElement) {
@@ -307,9 +310,6 @@ export default Component.extend({
     parentTopExited() {
       // make sure we captured the right dimensions before getting sticky!
       // console.log('parentTopExited');
-      if(this.get('isDestroyed') || this.get('isDestroying')) {
-        return;
-      }
       this.updateDimension();
       this.updatePosition();
     },
