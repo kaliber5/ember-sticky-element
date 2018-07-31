@@ -276,6 +276,9 @@ export default Component.extend({
   },
 
   updatePosition() {
+    if(this.get('isDestroyed') || this.get('isDestroying')) {
+      return;
+    }
     let { topTriggerElement, bottomTriggerElement } = this;
 
     if (topTriggerElement) {
