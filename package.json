@@ -26,7 +26,7 @@
     "deploy": "ember build && ember github-pages:commit --message \"Deploy gh-pages from commit $(git rev-parse HEAD)\" && git push origin gh-pages:gh-pages"
   },
   "dependencies": {
-    "ember-cli-babel": "^6.8.2",
+    "ember-cli-babel": "^7.1.1",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-in-viewport": "~3.0.0"
   },
