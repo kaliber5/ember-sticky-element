@@ -106,7 +106,7 @@ export default Component.extend({
    * @readOnly
    * @private
    */
-  isStickyTop: computed('enabled', 'parentTop', 'parentBottom', 'isStickyBottom', function() {
+  isStickyTop: computed('enabled', 'parentTop', 'isStickyBottom', function() {
     return this.get('enabled') && this.get('parentTop') === 'top' && !this.get('isStickyBottom');
   }).readOnly(),
 
@@ -192,7 +192,7 @@ export default Component.extend({
    * @type {string}
    * @private
    */
-  style: computed('isSticky', 'ownHeight', 'ownWidth', function() {
+  style: computed('isSticky', 'ownHeight', function() {
     let height = this.get('ownHeight');
     if (height > 0 && this.get('isSticky')) {
       return htmlSafe(`height: ${height}px;`);
