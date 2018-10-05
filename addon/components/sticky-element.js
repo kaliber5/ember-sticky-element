@@ -2,7 +2,7 @@ import Ember from 'ember';
 import { or, notEmpty } from '@ember/object/computed';
 import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
+import { computed, setProperties } from '@ember/object';
 import { later, cancel, debounce } from '@ember/runloop';
 import layout from '../templates/components/sticky-element';
 
@@ -268,9 +268,11 @@ export default Component.extend({
     if(this.get('isDestroyed') || this.get('isDestroying')) {
       return false;
     }
-    this.set('windowHeight', window.innerHeight);
-    this.set('ownHeight', this.element.offsetHeight);
-    this.set('ownWidth', this.element.offsetWidth);
+    setProperties(this, {
+      windowHeight: window.innerHeight,
+      ownHeight: this.element.offsetHeight,
+      ownWidth: this.element.offsetWidth
+    });
   },
 
   updatePosition() {
