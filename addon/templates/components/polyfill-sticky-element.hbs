@@ -1,24 +1,24 @@
 <div id={{wrapperId}} class="sticky sticky-element-container" style={{wrapperStyle}}>
-{{sticky-element/trigger offset=top enter=(action "parentTopEntered") exit=(action "parentTopExited") registerElement=(action "registerTopTrigger")}}
+  {{sticky-element/trigger offset=top enter=(action "parentTopEntered") exit=(action "parentTopExited") registerElement=(action "registerTopTrigger")}}
 
-<div class="
-  {{containerClassName}}
-  {{if isSticky containerStickyClassName}}
-  {{if isStickyTop containerStickyTopClassName}}
-  {{if isStickyBottom containerStickyBottomClassName}}"
-  style={{containerStyle}}>
+  <div class="
+    {{containerClassName}}
+    {{if isSticky containerStickyClassName}}
+    {{if isStickyTop containerStickyTopClassName}}
+    {{if isStickyBottom containerStickyBottomClassName}}"
+    style={{containerStyle}}>
 
-  {{yield
-    (hash
-      isSticky=isSticky
-      isStickyTop=isStickyTop
-      isStickyBottom=isStickyBottom
-    )
-  }}
+    {{yield
+      (hash
+        isSticky=isSticky
+        isStickyTop=isStickyTop
+        isStickyBottom=isStickyBottom
+      )
+    }}
 
-</div>
+  </div>
 
-{{#if stickToBottom}}
-  {{sticky-element/trigger type="bottom" offset=offsetBottom enter=(action "parentBottomEntered") exit=(action "parentBottomExited") registerElement=(action "registerBottomTrigger")}}
-{{/if}}
+  {{#if stickToBottom}}
+    {{sticky-element/trigger type="bottom" offset=offsetBottom enter=(action "parentBottomEntered") exit=(action "parentBottomExited") registerElement=(action "registerBottomTrigger")}}
+  {{/if}}
 </div>
