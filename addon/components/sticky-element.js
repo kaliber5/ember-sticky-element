@@ -5,7 +5,8 @@ import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { later, cancel, debounce } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
-import layout from '../templates/components/polyfill-sticky-element';
+import polyfillLayout from '../templates/components/polyfill-sticky-element';
+import nativeLayout from '../templates/components/sticky-element';
 
 const { testing } = Ember;
 
@@ -21,7 +22,9 @@ function elementPosition(element, offseTop, offsetBottom) {
 }
 
 export default Component.extend({
-  layout,
+  layout: computed('hasNativeSupport', function() {
+    return this.get('hasNativeSupport') ? nativeLayout : polyfillLayout;
+  }),
   tagName: '',
 
   /**
@@ -185,6 +188,25 @@ export default Component.extend({
   bottomTriggerElement: null,
 
   /**
+   * Feature detection stolen from modernizr
+   * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/css/positionsticky.js
+   *
+   * @property hasNativeSupport
+   * @private
+   */
+  hasNativeSupport: computed(function() {
+    let prop = 'position:';
+    let value = 'sticky';
+    let el = document.createElement('a');
+    let mStyle = el.style;
+    let prefixes = ["", "-webkit-", "-moz-", "-o-", "-ms-"];
+
+    mStyle.cssText = prop + prefixes.join(value + ';' + prop).slice(0, -prop.length);
+
+    return mStyle.position.indexOf(value) !== -1;
+  }),
+
+  /**
    * @property offsetBottom
    * @type {number}
    * @private
@@ -192,6 +214,26 @@ export default Component.extend({
   offsetBottom: computed('top', 'ownHeight', 'bottom', 'windowHeight', function() {
     let { top, ownHeight, bottom, windowHeight } = this.getProperties('top', 'ownHeight', 'bottom', 'windowHeight');
     return (windowHeight - top - ownHeight - bottom);
+  }),
+
+  /**
+   * Dynamic style for the sticky element
+   * if the component is used with native sticky support
+   *
+   * @property nativeStyle
+   * @type {string}
+   * @private
+   */
+  nativeStyle: computed('enabled', 'hasNativeSupport', 'top', 'bottom', 'stickToBottom', function() {
+    if (this.get('enabled') && this.get('hasNativeSupport')) {
+      let style = `position: sticky; top: ${this.get('top')}px;`;
+      if (this.get('stickToBottom')) {
+        style += `bottom: ${this.get('bottom')}px`;
+      }
+      return htmlSafe(style);
+    } else {
+      return '';
+    }
   }),
 
   /**
