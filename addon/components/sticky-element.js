@@ -4,7 +4,7 @@ import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { later, cancel, debounce } from '@ember/runloop';
-import layout from '../templates/components/sticky-element';
+import layout from '../templates/components/polyfill-sticky-element';
 
 const { testing } = Ember;
 
