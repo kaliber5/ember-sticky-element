@@ -4,6 +4,7 @@ import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { later, cancel, debounce } from '@ember/runloop';
+import { guidFor } from '@ember/object/internals';
 import layout from '../templates/components/polyfill-sticky-element';
 
 const { testing } = Ember;
@@ -21,8 +22,7 @@ function elementPosition(element, offseTop, offsetBottom) {
 
 export default Component.extend({
   layout,
-  classNames: ['sticky-element-container'],
-  attributeBindings: ['style'],
+  tagName: '',
 
   /**
    * The offset from the top of the viewport when to start sticking to the top
@@ -151,6 +151,13 @@ export default Component.extend({
   ownWidth: 0,
 
   /**
+   * @property wrapper
+   * @type {Node|null}
+   * @private
+   */
+  wrapper: null,
+
+  /**
    * @property stickToBottom
    * @type {boolean}
    * @readOnly
@@ -188,13 +195,26 @@ export default Component.extend({
   }),
 
   /**
-   * Dynamic style for the components element
+   * Id for the wrapper element
+   * if the component is used with polyfill mode
    *
-   * @property style
+   * @property wrapperId
    * @type {string}
    * @private
    */
-  style: computed('isSticky', 'ownHeight', 'ownWidth', function() {
+  wrapperId: computed(function() {
+    return guidFor(this);
+  }),
+
+  /**
+   * Dynamic style for the wrapper element
+   * if the component is used with polyfill mode
+   *
+   * @property wrapperStyle
+   * @type {string}
+   * @private
+   */
+  wrapperStyle: computed('isSticky', 'ownHeight', 'ownWidth', function() {
     let height = this.get('ownHeight');
     if (height > 0 && this.get('isSticky')) {
       return htmlSafe(`height: ${height}px;`);
@@ -271,8 +291,8 @@ export default Component.extend({
       return false;
     }
     this.set('windowHeight', window.innerHeight);
-    this.set('ownHeight', this.element.offsetHeight);
-    this.set('ownWidth', this.element.offsetWidth);
+    this.set('ownHeight', this.get('wrapper').offsetHeight);
+    this.set('ownWidth', this.get('wrapper').offsetWidth);
   },
 
   updatePosition() {
@@ -288,6 +308,8 @@ export default Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
+    let wrapperId = this.get('wrapperId');
+    this.set('wrapper', document.getElementById(wrapperId));
     this.updateDimension();
     // scheduleOnce('afterRender', this, this.updateDimension);
     this.initResizeEventListener();
