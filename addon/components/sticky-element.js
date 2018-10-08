@@ -4,7 +4,9 @@ import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { later, cancel, debounce } from '@ember/runloop';
-import layout from '../templates/components/sticky-element';
+import { guidFor } from '@ember/object/internals';
+import polyfillLayout from '../templates/components/polyfill-sticky-element';
+import nativeLayout from '../templates/components/sticky-element';
 
 const { testing } = Ember;
 
@@ -20,9 +22,10 @@ function elementPosition(element, offseTop, offsetBottom) {
 }
 
 export default Component.extend({
-  layout,
-  classNames: ['sticky-element-container'],
-  attributeBindings: ['style'],
+  layout: computed('hasNativeSupport', function() {
+    return this.get('hasNativeSupport') ? nativeLayout : polyfillLayout;
+  }),
+  tagName: '',
 
   /**
    * The offset from the top of the viewport when to start sticking to the top
@@ -151,6 +154,13 @@ export default Component.extend({
   ownWidth: 0,
 
   /**
+   * @property wrapper
+   * @type {Node|null}
+   * @private
+   */
+  wrapper: null,
+
+  /**
    * @property stickToBottom
    * @type {boolean}
    * @readOnly
@@ -178,6 +188,25 @@ export default Component.extend({
   bottomTriggerElement: null,
 
   /**
+   * Feature detection stolen from modernizr
+   * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/css/positionsticky.js
+   *
+   * @property hasNativeSupport
+   * @private
+   */
+  hasNativeSupport: computed(function() {
+    let prop = 'position:';
+    let value = 'sticky';
+    let el = document.createElement('a');
+    let mStyle = el.style;
+    let prefixes = ["", "-webkit-", "-moz-", "-o-", "-ms-"];
+
+    mStyle.cssText = prop + prefixes.join(value + ';' + prop).slice(0, -prop.length);
+
+    return mStyle.position.indexOf(value) !== -1;
+  }),
+
+  /**
    * @property offsetBottom
    * @type {number}
    * @private
@@ -188,13 +217,46 @@ export default Component.extend({
   }),
 
   /**
-   * Dynamic style for the components element
+   * Dynamic style for the sticky element
+   * if the component is used with native sticky support
    *
-   * @property style
+   * @property nativeStyle
    * @type {string}
    * @private
    */
-  style: computed('isSticky', 'ownHeight', 'ownWidth', function() {
+  nativeStyle: computed('enabled', 'hasNativeSupport', 'top', 'bottom', 'stickToBottom', function() {
+    if (this.get('enabled') && this.get('hasNativeSupport')) {
+      let style = `position: sticky; top: ${this.get('top')}px;`;
+      if (this.get('stickToBottom')) {
+        style += `bottom: ${this.get('bottom')}px`;
+      }
+      return htmlSafe(style);
+    } else {
+      return '';
+    }
+  }),
+
+  /**
+   * Id for the wrapper element
+   * if the component is used with polyfill mode
+   *
+   * @property wrapperId
+   * @type {string}
+   * @private
+   */
+  wrapperId: computed(function() {
+    return guidFor(this);
+  }),
+
+  /**
+   * Dynamic style for the wrapper element
+   * if the component is used with polyfill mode
+   *
+   * @property wrapperStyle
+   * @type {string}
+   * @private
+   */
+  wrapperStyle: computed('isSticky', 'ownHeight', 'ownWidth', function() {
     let height = this.get('ownHeight');
     if (height > 0 && this.get('isSticky')) {
       return htmlSafe(`height: ${height}px;`);
@@ -271,8 +333,8 @@ export default Component.extend({
       return false;
     }
     this.set('windowHeight', window.innerHeight);
-    this.set('ownHeight', this.element.offsetHeight);
-    this.set('ownWidth', this.element.offsetWidth);
+    this.set('ownHeight', this.get('wrapper').offsetHeight);
+    this.set('ownWidth', this.get('wrapper').offsetWidth);
   },
 
   updatePosition() {
@@ -288,6 +350,8 @@ export default Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
+    let wrapperId = this.get('wrapperId');
+    this.set('wrapper', document.getElementById(wrapperId));
     this.updateDimension();
     // scheduleOnce('afterRender', this, this.updateDimension);
     this.initResizeEventListener();

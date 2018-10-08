@@ -1,20 +1,13 @@
 {{sticky-element/trigger offset=top enter=(action "parentTopEntered") exit=(action "parentTopExited") registerElement=(action "registerTopTrigger")}}
 
-<div class="
-  {{containerClassName}}
-  {{if isSticky containerStickyClassName}}
-  {{if isStickyTop containerStickyTopClassName}}
-  {{if isStickyBottom containerStickyBottomClassName}}"
-  style={{containerStyle}}>
-
+<div id={{wrapperId}} class="sticky-element {{class}}" style={{nativeStyle}}>
   {{yield
-    (hash
-      isSticky=isSticky
-      isStickyTop=isStickyTop
-      isStickyBottom=isStickyBottom
-    )
+      (hash
+        isSticky=isSticky
+        isStickyTop=isStickyTop
+        isStickyBottom=isStickyBottom
+      )
   }}
-
 </div>
 
 {{#if stickToBottom}}
