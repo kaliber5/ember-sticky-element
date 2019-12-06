@@ -105,6 +105,7 @@ export default Component.extend(InViewportMixin, {
     this.registerElement(this.element);
   },
 
+  // eslint-disable-next-line ember/no-observers
   _onOffsetChange: observer('offset', function() {
     scheduleOnce('afterRender', this, this.updateViewportOptions);
   }),

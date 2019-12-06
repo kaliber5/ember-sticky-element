@@ -6,8 +6,6 @@ import { computed } from '@ember/object';
 import { later, cancel, debounce } from '@ember/runloop';
 import layout from '../templates/components/sticky-element';
 
-const { testing } = Ember;
-
 function elementPosition(element, offseTop, offsetBottom) {
   let top = element.getBoundingClientRect().top;
   if (top - offseTop < 0) {
@@ -243,7 +241,7 @@ export default Component.extend({
   },
 
   initPollTask() {
-    if (!testing) {
+    if (!Ember.testing) {
       this._pollTimer = later(this, this._pollTask, 500);
     }
   },
