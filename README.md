@@ -1,4 +1,5 @@
-# ember-sticky-element
+ember-sticky-element
+==============================================================================
 
 [![Build Status](https://travis-ci.org/kaliber5/ember-sticky-element.svg?branch=master)](https://travis-ci.org/kaliber5/ember-sticky-element)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-sticky-element.svg)](https://emberobserver.com/addons/ember-sticky-element)
@@ -10,7 +11,7 @@ Its semantics follow roughly the proposed [`position: sticky`](https://drafts.cs
 
 **See the [Demo App](https://kaliber5.github.io/ember-sticky-element/) for some examples!**
 
-## Why should I use this
+### Why should I use this
 
 The mentioned CSS extension of `position: sticky` is still in a draft stage, and 
 [not widely supported](http://caniuse.com/#feat=css-sticky) natively. While there are polyfills available, they lack
@@ -26,15 +27,25 @@ Currently it only supports scrolling in the vertical direction, not horizontal s
 It leverages [ember-in-viewport](https://github.com/DockYard/ember-in-viewport) under the hood for its efficient 
 viewport detection techniques.
 
-## How to use this
 
-### Installation
+Compatibility
+------------------------------------------------------------------------------
 
-```bash
+* Ember.js v2.18 or above
+* Ember CLI v2.13 or above
+* Node.js v8 or above
+
+
+Installation
+------------------------------------------------------------------------------
+
+```
 ember install ember-sticky-element
 ```
 
-### Basic usage
+
+Usage
+------------------------------------------------------------------------------
 
 Just wrap your content into the `sticky-element`:
 
@@ -48,13 +59,13 @@ This will make it flow with the other content when scrolling until it reaches th
 it will get sticky. This effectively makes it `position: fixed`. *(Unfortunately for now this will require you to allow
 inline styles if you use CSP!)*
 
-## Customization options
+### Customization options
 
-### Offsets
+#### Offsets
 
 The behaviour of the component and its styling can be customized with the following options. Also see the [Demo App](https://kaliber5.github.io/ember-sticky-element/) for some examples.
 
-#### Top offset
+##### Top offset
 
 Add the `top` property to specify an offset in pixels from the top of the viewport:
 
@@ -64,7 +75,7 @@ Add the `top` property to specify an offset in pixels from the top of the viewpo
 {{/sticky-element}}
 ```
 
-#### Bottom offset
+##### Bottom offset
 
 By default the sticky element will not care about its parent enclosing element and just remain sticky to the top when 
 scrolling the page all the way down. To make it also stick to the bottom of its parent (so it does not leave its parent's
@@ -79,7 +90,7 @@ boundaries), just add the `bottom` property, with a value of 0 or some other off
 Make sure that the parent element has some positioning applied, so at least `position: relative`, as sticking to the 
 bottom is done by applying `position: absolute` to the sticky element!
 
-#### Disabling
+##### Disabling
 
 You can set the `enabled` property to false to disable the sticky behavior:
 
@@ -89,9 +100,9 @@ You can set the `enabled` property to false to disable the sticky behavior:
 {{/sticky-element}}
 ```
 
-### Styling
+#### Styling
 
-#### CSS
+##### CSS
 
 The sticky element has a `containerClassName` property you can use for styling (by default `.sticky-element`). Furthermore additionals classes can be set:
 when being sticky:
@@ -99,7 +110,7 @@ when being sticky:
 * `containerStickyTopClassName` (by default `.sticky-element--sticky-top`): when sticked to the top.
 * `containerStickyBottomClassName` (by default `.sticky-element--sticky-bottom`): when sticked to the bottom.
 
-#### Content
+##### Content
 
 The component yields a hash, that contains the following boolean properties based on its state:
 * `isSticky`
@@ -114,3 +125,15 @@ You can use these to change the content of the sticky element based on its state
   <p>{{#if state.isSticky}}Yeah, I am sticky!{{else}}I am just a normal element.{{/if}}</p>
 {{/sticky-element}}
 ```
+
+
+Contributing
+------------------------------------------------------------------------------
+
+See the [Contributing](CONTRIBUTING.md) guide for details.
+
+
+License
+------------------------------------------------------------------------------
+
+This project is licensed under the [MIT License](LICENSE.md).
