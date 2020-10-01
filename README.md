@@ -28,7 +28,7 @@ It leverages [ember-in-viewport](https://github.com/DockYard/ember-in-viewport) 
 viewport detection techniques.
 
 
-Compatibility
+MINMUM requiremnts
 ------------------------------------------------------------------------------
 
 * Ember.js v2.18 or above
